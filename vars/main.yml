@@ -1,0 +1,3 @@
+---
+# vars file for gnome
+__dracula_gtk_theme: "https://github.com/dracula/gtk/archive/master.zip"

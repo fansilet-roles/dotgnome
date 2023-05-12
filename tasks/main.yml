@@ -1,0 +1,29 @@
+---
+# tasks file for gnome
+- name: "Downloading Theme {{ gnome_theme_url }}"
+  ansible.builtin.get_url:
+    url: "{{ gnome_theme_url }}"
+    dest: /tmp/theme.zip
+  register: download_theme
+
+- name: "Defining Install Place"
+  ansible.builtin.stat:
+    path: "{{ theme_install_dir }}"
+  register: define_path
+
+- ansible.builtin.debug:
+    msg: "{{ theme_install_dir }} {{ define_path }}"
+
+- name: "Assuring Install Path Exist"
+  ansible.builtin.file:
+    path: "{{ theme_install_dir }}"
+    state: directory
+    mode: '0750'
+  when:
+    not define_path['stat']['exists']
+
+
+
+
+
+
