@@ -1,4 +1,6 @@
 ---
 # defaults file for gnome
+gnome_theme_name: "{{ __theme_name }}"
 gnome_theme_url: "{{ __dracula_gtk_theme }}"
-theme_install_dir: "{{ ansible_facts['env']['HOME'] }}/.themes/"
+gnome_theme_install_dir: "{{ ansible_facts['env']['HOME'] }}/.themes/"
+gnome_enable_icon_theme: false

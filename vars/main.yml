@@ -1,3 +1,20 @@
 ---
 # vars file for gnome
+
+# The nem theme to be installed
+__theme_name: "Dracula"
+
+# The tempory place to store the theme
+__theme_file: "/tmp/{{ __theme_name }}.zip"
+
+# A valid theme file URI to be downloaded
 __dracula_gtk_theme: "https://github.com/dracula/gtk/archive/master.zip"
+
+# gsettings get org.gnome.desktop.interface gtk-theme
+__default_interface: "Adwaita"
+
+# gsettings get org.gnome.desltop.wm.preferences theme
+__default_theme: "Adwaita"
+
+# gsettings get org.gnome.desktop.interface icon-theme
+__default_icon_theme: "Adwaita"
