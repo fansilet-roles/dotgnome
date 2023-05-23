@@ -2,33 +2,57 @@
 # tasks file for gnome
 - name: "Defining Theme Install Place"
   ansible.builtin.stat:
-    path: "{{ gnome_theme_install_dir }}/{{ gnome_theme_name }}"
+    path: "{{ item }}"
   register: define_path
+  loop:
+    - "{{ gnome_theme_install_dir }}/{{ gnome_theme_name }}"
+    - "/tmp/{{ gnome_theme_name }}"
 
-- name: "Assuring Install Path Exist"
+- ansible.builtin.debug:
+    msg: "{{ define_path }}"
+
+- name: "Assure the Theme Install Path Exist"
   ansible.builtin.file:
-    path: "{{ gnome_theme_install_dir }}/{{ gnome_theme_name }}"
+    path: "{{ item }}"
     state: directory
     mode: '0750'
   when:
     not define_path['stat']['exists']
+  loop:
+    - "{{ gnome_theme_install_dir }}/{{ gnome_theme_name }}"
+    - "/tmp/{{ gnome_theme_name }}"
 
-- name: "Downloading Theme {{ gnome_theme_url }}"
+- name: "Downloading the Theme {{ gnome_theme_url }}"
   ansible.builtin.get_url:
     url: "{{ gnome_theme_url }}"
     dest: "{{ __theme_file }}" 
   register: download_theme
 
-- ansible.builtin.debug:
-    msg: "{{ download_theme }}"
-  when:
-    download_theme['failed']
-
-- name: "Installing Theme"
+- name: "Extracting the Theme files"
   ansible.builtin.unarchive:
     src: "{{ __theme_file }}"
-    dest: "{{ gnome_theme_install_dir }}/{{ gnome_theme_name }}"
+    dest: "/tmp/{{ gnome_theme_name }}"
     remote_src: true
-  register: install_theme
-  when:
-    not download_theme['failed']
+  register: extract_theme
+
+- name: "Finding theme files"
+  ansible.builtin.find:
+    paths: "/tmp/{{ gnome_theme_name }}"
+    file_type: directory
+    depth: 1
+  register: theme_files
+
+- ansible.builtin.debug:
+    msg: "{{ theme_files }}"
+
+  #- name: "Installing the {{gnome_theme_name }} Theme"
+  #  ansible.builtin.unarchive:
+  #    src: "{{ __theme_file }}"
+  #    dest: "{{ gnome_theme_install_dir }}/{{ gnome_theme_name }}"
+  #    remote_src: true
+  #  register: install_theme
+  #  when:
+  #    not download_theme['failed']
+  #
+
+
