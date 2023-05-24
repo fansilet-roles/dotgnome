@@ -15,10 +15,67 @@
     dest: "{{ __icon_theme_file }}" 
   register: download_icon_theme
 
-- name: "Activating Icon Theme"
-  community.general.dconf:
-    key: "/org/gnome/desktop/interface/icon-theme"
-    value: "'{{ gnome_theme_name }}'"
-    state: present
+- name: "Extracting the Icon Theme files"
+  ansible.builtin.unarchive:
+    src: "{{ __icon_theme_file }}"
+    dest: "{{ __icon_theme_tmp }}"
+    remote_src: true
+  register: extract_icon_theme
+
+- name: "Finding Icon theme files"
+  ansible.builtin.find:
+    paths: "{{ __icon_theme_tmp }}"
+    file_type: directory
+    depth: 1
+  register: icon_theme_files
+
+# icon themes can be stored in different ways such as:
+# - icon_theme.zip wich extracts as icon/content
+# - icon_theme.zip wich extracts as icon/version/content
+# in any case the theme must be installed as $HOME/.icons/theme_name/content
+# to properly address this corner cases, a count is used:
+# if we detect more then one directory it's probably a theme content
+# if we detect a single directory it's propably the theme version
+- name: "Defining Icon theme source path"
+  ansible.builtin.set_fact:
+    __icon_theme_source_path: "{{ __icon_theme_tmp }}/"
   when:
-    gnome_enable_icon_theme|bool
+    icon_theme_files['examined'] > 1
+
+- name: "Installing the Icon theme"
+  ansible.builtin.copy:
+    src: "{{ __icon_theme_source_path | default(icon_theme_files.files[0].path) }}/"
+    dest: "{{ gnome_icon_theme_install_dir }}/{{ gnome_icon_theme_name }}"
+    remote_src: true
+  register: icon_theme_installed
+
+- ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - "{{ __icon_theme_tmp }}"
+    - "{{ __icon_theme_file }}"
+  register:
+    tmp_icon_theme
+
+- name: "Cleaning temporary icon theme files"
+  ansible.builtin.command:
+    cmd: "echo Triggering clean-up"
+  notify:
+    - cleanup theme
+  when: >
+    ( gnome_install_theme_cleanup|bool )
+    and
+    ( tmp_icon_theme.results[0].stat.exists|bool 
+    or 
+      tmp_icon_theme.result[1].stat.exists|bool )
+
+- ansible.builtin.meta: flush_handlers
+
+
+  #- name: "Activating Icon Theme"
+  #  community.general.dconf:
+  #    key: "/org/gnome/desktop/interface/icon-theme"
+  #    value: "'{{ gnome_theme_name }}'"
+  #    state: present
+  #  when:
+  #    gnome_enable_icon_theme|bool

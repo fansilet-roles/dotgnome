@@ -1,0 +1,7 @@
+---
+# tasks to setup the gnome icon theme
+- name: "Activating the Icon Theme"
+  community.general.dconf:
+    key: "/org/gnome/desktop/interface/icon-theme"
+    value: "'{{ gnome_theme_name }}'"
+    state: present
