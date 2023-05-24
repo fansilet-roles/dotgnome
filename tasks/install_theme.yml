@@ -6,7 +6,7 @@
     mode: '0750'
   loop:
     - "{{ gnome_theme_install_dir }}/{{ gnome_theme_name }}"
-    - "/tmp/{{ gnome_theme_name }}"
+    - "{{ __theme_tmp }}"
 
 - name: "Downloading the Theme {{ gnome_theme_url }}"
   ansible.builtin.get_url:
@@ -17,13 +17,13 @@
 - name: "Extracting the Theme files"
   ansible.builtin.unarchive:
     src: "{{ __theme_file }}"
-    dest: "/tmp/{{ gnome_theme_name }}"
+    dest: "{{ __theme_tmp }}"
     remote_src: true
   register: extract_theme
 
 - name: "Finding theme files"
   ansible.builtin.find:
-    paths: "/tmp/{{ gnome_theme_name }}"
+    paths: "{{ __theme_tmp }}"
     file_type: directory
     depth: 1
   register: theme_files
@@ -37,7 +37,7 @@
 # if we detect a single directory it's propably the theme version
 - name: "Defining theme source path"
   ansible.builtin.set_fact:
-    __theme_source_path: "/tmp/{{ gnome_theme_name }}/"
+    __theme_source_path: "{{ __theme_tmp }}/"
   when:
     theme_files['examined'] > 1
 
@@ -49,9 +49,9 @@
   register: theme_installed
   
 - ansible.builtin.stat:
-    path: "/tmp/{{ gnome_theme_name }}"
+    path: "{{ item }}"
   loop:
-    - "/tmp/{{ gnome_theme_name }}"
+    - "{{ __theme_tmp }}"
     - "{{ __theme_file }}"
   register:
     tmp_theme

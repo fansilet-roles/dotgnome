@@ -1,0 +1,16 @@
+---
+# tasks to setup the gnome theme
+- import_tasks: install_packages.yml
+
+- name: "Activating theme interface"
+  community.general.dconf:
+    key: "/org/gnome/desktop/interface/gtk-theme"
+    value: "'{{ gnome_theme_name }}'"
+    state: present
+
+- name: "Activating theme preferences"
+  community.general.dconf:
+    key: "/org/gnome/desktop/wm/preferences/theme"
+    value: "'{{ gnome_theme_name }}'"
+    state: present
+

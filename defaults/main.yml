@@ -1,11 +1,22 @@
 ---
 # defaults file for gnome
 #
+# gnome setup dependencies
+gnome_setup_packages:
+  - python3-psutil
+
+#########################
+# Theme Settings 
+#########################
+
 # enables the gnome theme installation
 gnome_install_theme: true
 
 # toggle the gnome installation cleanup of the downloaded theme files
 gnome_install_theme_cleanup: true
+
+# toogle theme usage (if enabled, will use the theme after installation)
+gnome_enable_theme: true
 
 # define the gnome theme name to be installed
 gnome_theme_name: "{{ __theme_name }}"
@@ -16,9 +27,22 @@ gnome_theme_url: "{{ __dracula_gtk_theme }}"
 # defines the theme installation directory
 gnome_theme_install_dir: "{{ ansible_facts['env']['HOME'] }}/.themes/"
 
-# toggle the theme usage
-gnome_theme_enable: true
+#########################
+# Icon Theme Settings 
+#########################
 
-# toggle the theme icon usage
-gnome_enable_icon_theme: false
+# enables the gnome icon theme installation
+gnome_install_icon_theme: true
+
+# toggle the theme icon usage (if enabled, will use the theme after installation)
+gnome_enable_icon_theme: true
+
+# define the gnome theme name to be installed
+gnome_icon_theme_name: "{{ __icon_theme_name }}"
+
+# defines the url location to download the theme
+gnome_icon_theme_url: "{{ __dracula_icon_theme }}"
+
+# defines the theme installation directory
+gnome_icon_theme_install_dir: "{{ ansible_facts['env']['HOME'] }}/.icons/"
 

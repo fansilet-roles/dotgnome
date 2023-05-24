@@ -1,0 +1,11 @@
+---
+# install packages
+- name: "Installing dependencies"
+  ansible.builtin.dnf:
+    name: "{{ gnome_setup_packages }}"
+    state: present
+  become: true
+  when: >
+    ( "ansible_facts['distribution'] == 'Fedora'" )
+    or
+    ("ansible_facts['distribution'] == 'RedHat'" )
