@@ -1,2 +1,12 @@
 ---
 # handlers file for gnome
+- name: "Cleaning Theme Temporary Files"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+    force: true
+  loop:
+    - "/tmp/{{ gnome_theme_name }}"
+    - "{{ __theme_file }}"
+  listen:
+    - 'cleanup theme'

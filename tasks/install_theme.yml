@@ -1,0 +1,71 @@
+---
+- name: "Assure the Theme Install Path Exist"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0750'
+  loop:
+    - "{{ gnome_theme_install_dir }}/{{ gnome_theme_name }}"
+    - "/tmp/{{ gnome_theme_name }}"
+
+- name: "Downloading the Theme {{ gnome_theme_url }}"
+  ansible.builtin.get_url:
+    url: "{{ gnome_theme_url }}"
+    dest: "{{ __theme_file }}" 
+  register: download_theme
+
+- name: "Extracting the Theme files"
+  ansible.builtin.unarchive:
+    src: "{{ __theme_file }}"
+    dest: "/tmp/{{ gnome_theme_name }}"
+    remote_src: true
+  register: extract_theme
+
+- name: "Finding theme files"
+  ansible.builtin.find:
+    paths: "/tmp/{{ gnome_theme_name }}"
+    file_type: directory
+    depth: 1
+  register: theme_files
+
+# themes can be stored in different ways such as:
+# - theme.zip wich extracts as theme/content
+# - theme.zip wich extracts as theme/version/content
+# in any case the theme must be installed as $HOME/.themes/theme_name/content
+# to properly address this corner cases, a count is used:
+# if we detect more then one directory it's probably a theme content
+# if we detect a single directory it's propably the theme version
+- name: "Defining theme source path"
+  ansible.builtin.set_fact:
+    __theme_source_path: "/tmp/{{ gnome_theme_name }}/"
+  when:
+    theme_files['examined'] > 1
+
+- name: "Installing the theme"
+  ansible.builtin.copy:
+    src: "{{ __theme_source_path | default(theme_files.files[0].path) }}/"
+    dest: "{{ gnome_theme_install_dir }}/{{ gnome_theme_name }}"
+    remote_src: true
+  register: theme_installed
+  
+- ansible.builtin.stat:
+    path: "/tmp/{{ gnome_theme_name }}"
+  loop:
+    - "/tmp/{{ gnome_theme_name }}"
+    - "{{ __theme_file }}"
+  register:
+    tmp_theme
+
+- name: "Cleaning temporary files"
+  ansible.builtin.command:
+    cmd: "echo Triggering clean-up"
+  notify:
+    - cleanup theme
+  when: >
+    ( gnome_install_theme_cleanup|bool )
+    and
+    ( tmp_theme.results[0].stat.exists|bool 
+    or 
+      tmp_theme.result[1].stat.exists|bool )
+
+- ansible.builtin.meta: flush_handlers

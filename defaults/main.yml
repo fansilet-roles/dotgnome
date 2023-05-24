@@ -1,6 +1,24 @@
 ---
 # defaults file for gnome
+#
+# enables the gnome theme installation
+gnome_install_theme: true
+
+# toggle the gnome installation cleanup of the downloaded theme files
+gnome_install_theme_cleanup: true
+
+# define the gnome theme name to be installed
 gnome_theme_name: "{{ __theme_name }}"
+
+# defines the url location to download the theme
 gnome_theme_url: "{{ __dracula_gtk_theme }}"
+
+# defines the theme installation directory
 gnome_theme_install_dir: "{{ ansible_facts['env']['HOME'] }}/.themes/"
+
+# toggle the theme usage
+gnome_theme_enable: true
+
+# toggle the theme icon usage
 gnome_enable_icon_theme: false
+
