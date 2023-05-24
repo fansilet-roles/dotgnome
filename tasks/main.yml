@@ -6,4 +6,9 @@
 
 - name: "Including Theme Setup"
   ansible.builtin.include_tasks: setup_theme.yml
-  when: gnome_theme_enable|bool
+  when: gnome_enable_theme|bool
+
+  #- name: "Including Theme Icon Installation"
+  #  ansible.builtin.include_tasks: install_icon_theme.yml
+  #  when: gnome_install_icon_theme|bool
+

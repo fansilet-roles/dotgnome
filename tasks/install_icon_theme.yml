@@ -1,0 +1,24 @@
+---
+# install an icon theme
+- name: "Assure the Icon Theme Install Path Exist"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0750'
+  loop:
+    - "{{ gnome_icon_theme_install_dir }}/{{ gnome_icon_theme_name }}"
+    - "{{ __icon_theme_tmp }}"
+
+- name: "Downloading the Icon Theme {{ gnome_icon_theme_url }}"
+  ansible.builtin.get_url:
+    url: "{{ gnome_icon_theme_url }}"
+    dest: "{{ __icon_theme_file }}" 
+  register: download_icon_theme
+
+- name: "Activating Icon Theme"
+  community.general.dconf:
+    key: "/org/gnome/desktop/interface/icon-theme"
+    value: "'{{ gnome_theme_name }}'"
+    state: present
+  when:
+    gnome_enable_icon_theme|bool
