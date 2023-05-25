@@ -1,7 +1,5 @@
 ---
 # tasks to setup the gnome theme
-- import_tasks: install_packages.yml
-
 - name: "Activating theme interface"
   community.general.dconf:
     key: "/org/gnome/desktop/interface/gtk-theme"

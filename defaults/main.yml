@@ -4,6 +4,8 @@
 # gnome setup dependencies
 gnome_setup_packages:
   - python3-psutil
+  - gnome-extensions-app
+  - gnome-shell-extension-common
 
 #########################
 # Theme Settings 

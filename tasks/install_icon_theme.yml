@@ -70,12 +70,3 @@
       tmp_icon_theme.result[1].stat.exists|bool )
 
 - ansible.builtin.meta: flush_handlers
-
-
-  #- name: "Activating Icon Theme"
-  #  community.general.dconf:
-  #    key: "/org/gnome/desktop/interface/icon-theme"
-  #    value: "'{{ gnome_theme_name }}'"
-  #    state: present
-  #  when:
-  #    gnome_enable_icon_theme|bool

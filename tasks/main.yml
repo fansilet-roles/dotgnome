@@ -1,5 +1,8 @@
 ---
 # tasks file for gnome
+- name: "Including Packages Installations"
+  ansible.builtin.include_tasks: install_packages.yml
+
 - name: "Including Theme Installation"
   ansible.builtin.include_tasks: install_theme.yml
   when: gnome_install_theme|bool
