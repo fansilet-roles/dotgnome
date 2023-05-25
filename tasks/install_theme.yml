@@ -48,6 +48,11 @@
     remote_src: true
   register: theme_installed
   
+- name: "Including Dracula Fix"
+  ansible.builtin.include_tasks: gtk4_dracula_fix.yml
+  when:
+    gnome_theme_name == 'Dracula'
+
 - ansible.builtin.stat:
     path: "{{ item }}"
   loop:

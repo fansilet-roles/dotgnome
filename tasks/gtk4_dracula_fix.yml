@@ -1,0 +1,23 @@
+---
+# fixing gtk-4 Dracula theme, when window manager fail to apply the theme in gtk4 apps such as 
+# nautilus, gnome-calendar and others.
+- name: "Assure the fix gtk4 Path Exist"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ ansible_facts['env']['HOME'] }}/.config/assets"
+    - "{{ ansible_facts['env']['HOME'] }}/.config/gtk-4.0"
+
+- name: "Installing assets to fix gtk4 apps"
+  ansible.builtin.copy:
+    src: "{{ __dracula_assets }}"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.config/assets/"
+    remote_src: true
+
+- name: "Installing gtk-4.0 dracula theme"
+  ansible.builtin.copy:
+    src: "{{ __dracula_gtk4 }}"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.config/gtk-4.0/"
+    remote_src: true

@@ -39,3 +39,12 @@ __default_theme: "Adwaita"
 
 # gsettings get org.gnome.desktop.interface icon-theme
 __default_icon_theme: "Adwaita"
+
+# dracula assets directory used to fix gtk-4.0 issues
+# it's content must be copied to the .config/assets directory
+__dracula_assets: "{{ ansible_facts['env']['HOME'] }}/.themes/Dracula/assets/"
+
+# dracula gtk-4.0 content must be copied to $HOME/.config/gtk-4.0
+# to fix issues where window managers don't applies the theme
+# more at https://github.com/dracula/gtk/issues/206
+__dracula_gtk4: "{{ ansible_facts['env']['HOME'] }}/.themes/Dracula/gtk-4.0/"
