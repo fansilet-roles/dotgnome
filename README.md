@@ -5,7 +5,7 @@ Gnome Shell configurations and tweeks.
 This role will configure and install gnome theme and icons, it also allows to customize settings
 using `dconf`.  
 
-By default this role will install the [dracula theme](...), but any custom theme can be installed
+By default this role will install the [dracula gtk theme](https://draculatheme.com/gtk), but any custom theme can be installed
 by changing the role variables.  
 
 Requirements
@@ -13,7 +13,6 @@ Requirements
 
 * ansible >= 2.11.12
 * community.general >= 3.8.3
-
 
 Role Variables
 --------------
@@ -49,7 +48,7 @@ Example Playbook
 ----------------
 
 * Using the role with all the default settings to install the dracula theme:  
-```YAML
+```yaml
     - hosts: servers
       roles:
          - { role: mrbrandao.gnome }
@@ -57,7 +56,7 @@ Example Playbook
 
 * Installing a custom theme from gnome-look:  
 
-```YAML
+```yaml
 # working in progress
 ---
 - name: "Installing mrbrandao.gnome role"
@@ -74,7 +73,7 @@ Example Playbook
 
 * Installing the theme as a system global theme:  
 
-```YAML
+```yaml
 ---
 - name: "Installing mrbrandao.gnome role"
   hosts:
@@ -102,7 +101,7 @@ the `become-pass` from the YAML use `ansible-vault` and configure the yaml as be
 4. `ansible-playbook gnome-play.yml --vault-password-file=vault` - run your gnome playbook using your vault pass.  
 
 
-```YAML
+```yaml
 ---
 # gnome-play.yml example with become pass as a vault secret
 - name: "Installing mrbrandao.gnome role"
@@ -125,4 +124,4 @@ GPL-3.0-only
 Author Information
 ------------------
 
-@mrbrandao - Igor Brandao - github.com/mrbrandao
+@mrbrandao - Igor Brandao - https://github.com/mrbrandao
