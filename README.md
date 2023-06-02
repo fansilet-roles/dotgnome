@@ -1,38 +1,128 @@
 Gnome
 =========
 
-Gnome Shell configurations and tweeks
+Gnome Shell configurations and tweeks.
+This role will configure and install gnome theme and icons, it also allows to customize settings
+using `dconf`.  
+
+By default this role will install the [dracula theme](...), but any custom theme can be installed
+by changing the role variables.  
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+* ansible >= 2.11.12
+* community.general >= 3.8.3
+
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+All the supported variables can be listed from `defaults/main.yml` file, here is more info about it:  
+
+
+**The theme section**  
+* `gnome_setup_packages`  - `(list)` - list of packages to be installed  
+* `gnome_install_theme`   - `(bool)` - enable or disable the theme installation (defaults `true`)  
+* `gnome_install_theme_cleanup` - `(bool)`  - toggle the cleanup of temporary theme files after installation  
+* `gnome_enable_theme`  - `(bool)`  - toogle the theme enablement. `(default true)` will auto enable the theme after installation._A session reload may be required, such as pkill -1 gnome-shell_  
+* `gnome_theme_name` - `(str)` - the theme name as simple string. `(default 'Dracula')`.  
+* `gnome_theme_url` - `(str)` - the full URL to download the theme file, it must be a `zip` or a tarball file. `(default to dracula URL)`.  
+* `gnome_theme_install_dir` - `(str)` - the full path where theme will be installed. `(default $HOME/.themes)` to install in system use `/usr/share/themes/`  
+
+**The icon section**  
+
+* `gnome_install_icon_theme`  - `(bool)`  - toggle the icon theme installation. `(default true)`.  
+* `gnome_enable_icon_theme`   - `(bool)`  - enable or disable the icon theme after installation. `(default true)`.  
+* `gnome_icon_theme_name`   - `(str)` - the icon theme name `(default Dracula)`.  
+* `gnome_icon_theme_url`  -   `(str)` - the icon theme URL to be downloaded. Files must be a `zip` or a tarball. `(defaults to dracula icons)`.  
+* `gnome_icon_theme_install_dir`  `(str)` - the path where the icon theme will be installed. `(default $HOME/.icons)`, to install as system global use `/usr/share/icons/`
+
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
+
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
+* Using the role with all the default settings to install the dracula theme:  
+```YAML
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+         - { role: mrbrandao.gnome }
+```
+
+* Installing a custom theme from gnome-look:  
+
+```YAML
+# working in progress
+---
+- name: "Installing mrbrandao.gnome role"
+  hosts:
+    - servers
+  vars:
+    gnome_theme_name: "MacOSX-Mojave"
+    gnome_theme_url: ""
+    gnome_icon_theme_name: "MacOSX-Mojave"
+    gnome_icon_theme_url: ""
+  roles:
+    - mrbrandao.gnome
+```
+
+* Installing the theme as a system global theme:  
+
+```YAML
+---
+- name: "Installing mrbrandao.gnome role"
+  hosts:
+    - servers
+  vars:
+    gnome_theme_name: "MacOSX-Mojave"
+    gnome_theme_url: "https://full-url-of-my-theme.zip"
+    gnome_theme_install_dir: "/usr/share/themes/"
+    gnome_icon_theme_name: "MacOSX-Mojave"
+    gnome_icon_theme_url: "https://full-url-of-icon-theme.zip"
+    gnome_icon_theme_install_dir: "/usr/share/icons/"
+  roles:
+    - mrbrandao.gnome
+```
+
+
+* Installing the theme using ansible-vault in the `become-pass`:  
+
+This role will need the `become` during the package installation phase, if wondering to auto inform
+the `become-pass` from the YAML use `ansible-vault` and configure the yaml as bellow:  
+
+1. `echo "myvaultpass" > vault` - saving your vault pass  
+2. `echo 'pass: MyBecomePass' > secret.yml` - creating the vault secret  
+3. `ansible-vault encrypt secret.yml` - encrypt it using your vault pass  
+4. `ansible-playbook gnome-play.yml --vault-password-file=vault` - run your gnome playbook using your vault pass.  
+
+
+```YAML
+---
+# gnome-play.yml example with become pass as a vault secret
+- name: "Installing mrbrandao.gnome role"
+  hosts:
+    - servers
+  vars:
+    ansible_become_pass: "{{ pass }}"
+  vars_files:
+    - secret.yml
+
+  roles:
+    - mrbrandao.gnome
+```
 
 License
 -------
 
-BSD
+GPL-3.0-only
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+@mrbrandao - Igor Brandao - github.com/mrbrandao
