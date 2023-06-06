@@ -19,9 +19,12 @@ Role Variables
 
 All the supported variables can be listed from `defaults/main.yml` file, here is more info about it:  
 
+**Global Variables**  
 
-**The theme section**  
-* `gnome_setup_packages`  - `(list)` - list of packages to be installed  
+* `gnome_setup_packages`    - `(list)`  - list of packages to be installed  
+* `gnome_restore_defaults`  - `(bool)`  - if enable will uninstall and restore the defaults. `(default false)`.
+
+**Theme variables**  
 * `gnome_install_theme`   - `(bool)` - enable or disable the theme installation (defaults `true`)  
 * `gnome_install_theme_cleanup` - `(bool)`  - toggle the cleanup of temporary theme files after installation  
 * `gnome_enable_theme`  - `(bool)`  - toogle the theme enablement. `(default true)` will auto enable the theme after installation._A session reload may be required, such as pkill -1 gnome-shell_  
@@ -29,7 +32,7 @@ All the supported variables can be listed from `defaults/main.yml` file, here is
 * `gnome_theme_url` - `(str)` - the full URL to download the theme file, it must be a `zip` or a tarball file. `(default to dracula URL)`.  
 * `gnome_theme_install_dir` - `(str)` - the full path where theme will be installed. `(default $HOME/.themes)` to install in system use `/usr/share/themes/`  
 
-**The icon section**  
+**Icon theme variables**  
 
 * `gnome_install_icon_theme`  - `(bool)`  - toggle the icon theme installation. `(default true)`.  
 * `gnome_enable_icon_theme`   - `(bool)`  - enable or disable the icon theme after installation. `(default true)`.  
@@ -53,6 +56,25 @@ Example Playbook
       roles:
          - { role: mrbrandao.gnome }
 ```
+  
+Use the install flag:  
+`ansible-playbook myplay.yml --tags=install`  
+  
+
+* Restoring the default theme
+```yaml
+---
+- name: "Restoring to default 'Adwaita' theme"
+  hosts: servers
+  vars:
+    gnome_restore_defaults: true
+  roles:
+    - mrbrandao.gnome
+```
+  
+Use the uninstall tag:  
+`ansible-playbook myplay --tags=uninstall`  
+  
 
 * Installing a custom theme from gnome-look:  
 
@@ -115,6 +137,7 @@ the `become-pass` from the YAML use `ansible-vault` and configure the yaml as be
   roles:
     - mrbrandao.gnome
 ```
+
 
 License
 -------
