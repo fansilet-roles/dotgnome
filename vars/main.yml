@@ -34,6 +34,9 @@ __dracula_icon_theme: "https://github.com/dracula/gtk/files/5214870/Dracula.zip"
 # gsettings get org.gnome.desktop.interface gtk-theme
 __default_interface: "Adwaita"
 
+# gsettings get org.gnome.desktop.wm.preferences theme
+__default_wm_preferences: "Adwaita"
+
 # gsettings get org.gnome.desltop.wm.preferences theme
 __default_theme: "Adwaita"
 
@@ -44,7 +47,15 @@ __default_icon_theme: "Adwaita"
 # it's content must be copied to the .config/assets directory
 __dracula_assets: "{{ ansible_facts['env']['HOME'] }}/.themes/Dracula/assets/"
 
+# original assets backup used during the restore defaults
+# yamllint disable-line
+__bkp_assets: "{{ ansible_facts['env']['HOME'] }}/.config/assets-bkp-mrbrandao-gnome"
+
 # dracula gtk-4.0 content must be copied to $HOME/.config/gtk-4.0
 # to fix issues where window managers don't applies the theme
 # more at https://github.com/dracula/gtk/issues/206
 __dracula_gtk4: "{{ ansible_facts['env']['HOME'] }}/.themes/Dracula/gtk-4.0/"
+
+# original gtk-4.0 used during the restore defaults
+# yamllint disable-line
+__bkp_gtk4: "{{ ansible_facts['env']['HOME'] }}/.config/gtk-4.0-bkp-mrbrandao-gnome"

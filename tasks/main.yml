@@ -1,20 +1,15 @@
 ---
 # tasks file for gnome
-- name: "Including Packages Installations"
-  ansible.builtin.include_tasks: install_packages.yml
+- name: "Including installation and setup"
+  ansible.builtin.include_tasks: install.yml
+  when:
+    - not gnome_restore_defaults
+  tags:
+    - install
 
-- name: "Including Theme Installation"
-  ansible.builtin.include_tasks: install_theme.yml
-  when: gnome_install_theme|bool
-
-- name: "Including Theme Setup"
-  ansible.builtin.include_tasks: setup_theme.yml
-  when: gnome_enable_theme|bool
-
-- name: "Including Theme Icon Installation"
-  ansible.builtin.include_tasks: install_icon_theme.yml
-  when: gnome_install_icon_theme|bool
-
-- name: "Including Theme Icon Setup"
-  ansible.builtin.include_tasks: setup_icon_theme.yml
-  when: gnome_enable_icon_theme|bool
+- name: "Including uninstall and restore defaults"
+  ansible.builtin.include_tasks: uninstall.yml
+  when:
+    - gnome_restore_defaults|bool
+  tags:
+    - uninstall
