@@ -1,0 +1,7 @@
+---
+#tasks to uninstall the gnome icon theme
+- name: "Uninstalling icon theme {{ gnome_icon_theme_name }}"
+  ansible.builtin.file:
+    path: "{{ gnome_icon_theme_install_dir }}/{{ gnome_icon_theme_name }}"
+    state: absent
+    force: true

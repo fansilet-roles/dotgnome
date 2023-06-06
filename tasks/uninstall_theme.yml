@@ -1,0 +1,12 @@
+---
+# taks to uninstall the gnome theme and restore the default
+- name: "Uninstalling theme {{ gnome_theme_name }}"
+  ansible.builtin.file:
+    path: "{{ gnome_theme_install_dir }}/{{ gnome_theme_name }}"
+    state: absent
+    force: true
+
+- name: "Restoring Dracula fix for default gtk4.0 assets"
+  ansible.builtin.import_tasks: restore_gtk4_dracula_fix.yml
+  when:
+    gnome_theme_name == 'Dracula'

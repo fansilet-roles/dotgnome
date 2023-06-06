@@ -1,0 +1,31 @@
+---
+# tasks to undo the gtk-4.0 Dracula fix
+- name: "Making sure the assets backup exists"
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - "{{ __bkp_assets }}"
+    - "{{ __bkp_gtk4 }}"
+  register: __bkp_dirs
+
+- name: "Restoring old assets directory"
+  ansible.builtin.file:
+    src: "{{ __bkp_assets }}"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.config/assets"
+    state: directory
+    remote_src: true
+    force: true
+  when:
+    __bkp_dirs[0].stat.exists|bool
+  register: __restored_assets
+
+- name: "Restoring old gtk-4.0 directory"
+  ansible.builtin.file:
+    src: "{{ __bkp_gtk4 }}"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.config/gtk-4.0"
+    state: directory
+    remote_src: true
+    force: true
+  when:
+    __bkp_dirs[1].stat.exists|bool
+  register: __restored_gtk4

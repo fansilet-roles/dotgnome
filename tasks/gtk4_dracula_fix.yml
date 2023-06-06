@@ -7,17 +7,35 @@
     state: directory
     mode: '0755'
   loop:
+    - "{{ __bkp_assets }}"
+    - "{{ __bkp_gtk4 }}"
     - "{{ ansible_facts['env']['HOME'] }}/.config/assets"
     - "{{ ansible_facts['env']['HOME'] }}/.config/gtk-4.0"
+
+- name: "Saving current assets"
+  ansible.builtin.copy:
+    src: "{{ ansible_facts['env']['HOME'] }}/.config/assets/"
+    dest: "{{ __bkp_assets }}/"
+    remote_src: true
+  register: __assets_bkp
 
 - name: "Installing assets to fix gtk4 apps"
   ansible.builtin.copy:
     src: "{{ __dracula_assets }}"
     dest: "{{ ansible_facts['env']['HOME'] }}/.config/assets/"
     remote_src: true
+  when: not __assets_bkp['failed']
+
+- name: "Saving current gtk-4.0"
+  ansible.builtin.copy:
+    src: "{{ ansible_facts['env']['HOME'] }}/.config/gtk-4.0/"
+    dest: "{{ __bkp_gtk4 }}/"
+    remote_src: true
+  register: __gtk4_bkp
 
 - name: "Installing gtk-4.0 dracula theme"
   ansible.builtin.copy:
     src: "{{ __dracula_gtk4 }}"
     dest: "{{ ansible_facts['env']['HOME'] }}/.config/gtk-4.0/"
     remote_src: true
+  when: not __gtk4_bkp['failed']

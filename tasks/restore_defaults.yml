@@ -1,0 +1,26 @@
+---
+# tasks to restore default gnome theme and icon setup
+- name: "Restoring default gnome theme"
+  community.general.dconf:
+    key: "/org/gnome/desktop/interface/gtk-theme"
+    value: "'{{ __default_interface }}'"
+    state: present
+  register: __restored_theme
+
+- name: "Restoring default icon theme"
+  community.general.dconf:
+    key: "/org/gnome/desktop/interface/icon-theme"
+    value: "'{{ __default_icon_theme }}'"
+    state: present
+  register: __restored_icon_theme
+  when:
+    not __restored_theme['failed']
+
+- name: "Restoring default theme preferences"
+  community.general.dconf:
+    key: "/org/gnome/desktop/wm/preferences/theme"
+    value: "'{{ __default_wm_preferences }}'"
+    state: present
+  register: __restored_preferences
+  when:
+    not __restored_icon_theme['failed']
