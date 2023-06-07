@@ -8,24 +8,40 @@
     - "{{ __bkp_gtk4 }}"
   register: __bkp_dirs
 
-- name: "Restoring old assets directory"
+- name: "Removing old assets"
   ansible.builtin.file:
-    src: "{{ __bkp_assets }}"
-    dest: "{{ ansible_facts['env']['HOME'] }}/.config/assets"
-    state: directory
-    remote_src: true
+    path: "{{ ansible_facts['env']['HOME'] }}/.config/assets"
+    state: absent
     force: true
+  register: __old_assets_removed
   when:
-    __bkp_dirs[0].stat.exists|bool
+    __bkp_dirs.results[0].stat.exists|bool
+
+- name: "Restoring old assets directory"
+  ansible.builtin.command:
+    argv:
+      - mv
+      - "{{ __bkp_assets }}" 
+      - "{{ ansible_facts['env']['HOME'] }}/.config/assets"
+  when: 
+    not __old_assets_removed['failed']
   register: __restored_assets
 
-- name: "Restoring old gtk-4.0 directory"
+- name: "Removing old gtk-4.0"
   ansible.builtin.file:
-    src: "{{ __bkp_gtk4 }}"
-    dest: "{{ ansible_facts['env']['HOME'] }}/.config/gtk-4.0"
-    state: directory
-    remote_src: true
+    path: "{{ ansible_facts['env']['HOME'] }}/.config/gtk-4.0"
+    state: absent
     force: true
+  register: __old_gtk4_removed
   when:
-    __bkp_dirs[1].stat.exists|bool
+    __bkp_dirs.results[1].stat.exists|bool
+
+- name: "Restoring old gtk-4.0 directory"
+  ansible.builtin.command:
+    argv:
+      - mv
+      - "{{ __bkp_gtk4 }}"
+      - "{{ ansible_facts['env']['HOME'] }}/.config/gtk-4.0"
+  when:
+    not __old_gtk4_removed['failed']
   register: __restored_gtk4

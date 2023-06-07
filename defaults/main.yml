@@ -6,7 +6,7 @@
 
 # if "true" will restore to the default settings 
 # and uninstall the installed theme
-gnome_restore_defaults: true
+gnome_restore_defaults: false
 
 # gnome setup dependencies
 gnome_setup_packages:

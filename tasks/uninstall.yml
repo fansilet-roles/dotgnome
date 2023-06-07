@@ -4,11 +4,11 @@
   block:
     - name: "Including restore defaults"
       ansible.builtin.include_tasks: restore_defaults.yml
-      
+
     - name: "Including uninstall theme"
       ansible.builtin.include_tasks: uninstall_theme.yml
       when: not __restored_preferences['failed']
-    
+
     - name: "Including uninstall icon theme"
       ansible.builtin.include_tasks: uninstall_icon_theme.yml
   tags:
